@@ -4,6 +4,10 @@ import logging
 
 app = Flask(__name__)
 
+def logs():
+    logging.basicConfig(filename="app.log",filemode="a",
+    level=logging.DEBUG,format="%(asctime)s, %(message)s")
+
 @app.route("/status")
 def status():
     Response=app.response_class(
@@ -12,6 +16,7 @@ def status():
         mimetype='application/json'
         )
     endpoint_name='status'
+    logs()
     logging.debug("%s has reached", endpoint_name)
     return Response
 
@@ -25,18 +30,16 @@ def metrics():
         mimetype='application/json'
         )
     endpoint_name='metrics'
+    logs()
     logging.debug("%s has reached", endpoint_name)
     return Response
 
 @app.route("/")
 def hello():
     endpoint_name='__main__'
+    logs()
     logging.debug("%s has reached", endpoint_name)
     return "Hello World!"
 
 if __name__ == "__main__":
-    #Stream logs to app.log file in the main application inside the if clause
-    logging.basicConfig(filename="app.log",filemode="a",
-        level=logging.DEBUG,format="%(asctime)s, %(message)s")
-    #filemode=a is the default and it's working just fine for all cases
     app.run(host='0.0.0.0')
